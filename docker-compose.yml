@@ -1,0 +1,25 @@
+services:
+  db:
+    image: postgres:15
+    container_name: weather_bot_db
+    environment:
+      POSTGRES_USER: weather_bot_user
+      POSTGRES_PASSWORD: strong_password
+      POSTGRES_DB: weather_bot
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped    # ← исправлено
+
+  bot:
+    build: .
+    container_name: weather_bot
+    env_file:
+      - .env
+    depends_on:
+      - db
+    restart: unless-stopped
+
+volumes:
+  pgdata:
